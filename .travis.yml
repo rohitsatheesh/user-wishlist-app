@@ -1,0 +1,23 @@
+language: generic
+
+services:
+- docker
+
+after_success: 
+- docker build -t  rohitsatheesh/user-wishlist-app .
+
+- echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_ID" --password-stdin
+
+- docker push rohitsatheesh/user-wishlist-app 
+
+deploy:
+  provider: elasticbeanstalk
+  region: ap-south-1
+  app: my-user-wishlist-app
+  enc: Myuserwishlistapp-env
+  access_key_id: $AWS_ACCESS_KEY
+  secret_access_key: $AWS_SECRET_KEY
+  bucket_name: "multi-container-wishlist-appp"
+  bucket_path: "docker"
+  on:
+    branch: multi-cont-app
